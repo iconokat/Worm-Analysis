@@ -13,20 +13,21 @@ long = length(theta_matrix);
 
 num_epochs = long/1800;
 
-things = 0:num_epochs;
+things = 0:num_epochs; 
 frame_nums = things.*1800;
 
 
 for i = 1:num_epochs;
-    A{i} = theta_matrix(frame_nums(i)+1:frame_nums(i+1),:);
-    for j=1:size(A{i},2);
-        [avgbyworm{i}(:,j), allcycles{i,j}] = cycle_avg(A{i}(:,j));
-        grandmean{i} = mean(avgbyworm{i}');
-        if var == 1;
-            cyclevar{i} = SEM(avgbyworm{i}');
-        else
-            cyclevar{i} = std(avgbyworm{i}');
-        end
+    A{i} = theta_matrix(frame_nums(i)+1:frame_nums(i+1),:); %Chopping theta matrix into epochs
+    for j=1:size(A{i},2); %loop thru for every worm j
+        [avgbyworm{i}(:,j), allcycles{i,j}] = cycle_avg(A{i}(:,j)); 
+    end
+    allcycles{i} = vertcat(allcycles{i,1:end}); %put all worms in the same matrix
+    grandmean{i} = mean(avgbyworm{i}');  %equivalent to taking mean(allcycles)
+    if var == 1; %assess variance on all identified cycles. 
+            cyclevar{i} = SEM(allcycles{i}); 
+    else
+            cyclevar{i} = std(allcycles{i});
     end
 end
 
