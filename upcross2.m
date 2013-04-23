@@ -15,3 +15,11 @@ for i = 2:length(theta)
         j = j+1;
     end
 end
+
+%%plotting
+plot(theta)
+hold on; 
+plot(crosstimes, theta(crosstimes),'r*');
+waitforbuttonpress;
+hold off;
+
