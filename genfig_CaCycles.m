@@ -1,19 +1,23 @@
-function [avgcycle, norm_cycles] = cycle_avg(theta)
+function [] = genfig_CaCycles(theta, ratio);
 % This function is intended to give an idea of what an average theta cycle
-% looks like for a given worm. KM 11 March 2013. kat.mccormick@gmail.com
+% and ratio looks like for a given worm.  Based on cycle_avg. KM 10 December 2013. kat.mccormick@gmail.com
 
-% [~, times] = peakdet(theta,120);
 [cycle_start, cycle_end] = upcross2(theta);
 norm_cycles = inf(length(cycle_start)-1, 100);
 
 for i= 1:length(cycle_start)
     cyclei = theta(cycle_start(i):cycle_end(i));
+    ratioi = ratio(cycle_start(i):cycle_end(i));
     if length(cyclei)>55 %% This is meant to weed out reversals / other blips, but may need adjustment
         norm_cycles(i,:)= interpft(cyclei,100);
+        norm_ratios(i,:)= interpft(ratioi, 100);
     end
 end
     norm_cycles = norm_cycles(isfinite(norm_cycles(:, 1)), :); %remove NaN,inf rows
     avgcycle = nanmean(norm_cycles,1);
+    
+    norm_ratios = norm_ratios(isfinite(norm_ratios(:, 1)), :); %remove NaN,inf rows
+    avgratio = nanmean(norm_ratios,1);
     
 %     %% plotting
 %     list = [];
@@ -37,14 +41,16 @@ end
     
 %% plotting
 figure(1)
+subplot(2,1,1)
 plot(norm_cycles');
 hold on;
 figure(1)
 plot(avgcycle,'k','LineWidth',5);
-waitforbuttonpress;
-hold off;
+
+subplot(2,1,2)
+plot(norm_ratios');
+hold on;
+plot(avgratio,'k','LineWidth',5);
+
 
 end
-
-  
-% Added Plotting for cycles
